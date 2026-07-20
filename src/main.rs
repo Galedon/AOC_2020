@@ -6,20 +6,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let mut n_valid = 0;
     let data = read_file_to_string("input/2.txt")?;
     for line in data.iter(){
-        let parts: Vec<_> = line.split(":").collect();
-        let policy = parts[0];
-        let password = parts[1];
-        let p_parts: Vec<_> = policy.split(" ").collect();
-        let p_char = p_parts[1];
-        let p_num = p_parts[0];
-        let p_num_parts: Vec<_> = p_num.split("-").collect();
-        let p_min: i32 = p_num_parts[0].parse().unwrap();
-        let p_max: i32 = p_num_parts[1].parse().unwrap();
-        let p_contain: i32 = password.chars()
-            .filter(|c| *c == p_char.chars().next().unwrap())
-            .count() as i32;
+        let (policy, password) = line.split_once(':').ok_or("split")?;
+        let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
+        let (min_s, max_s) = range.split_once('-').ok_or("split")?;
 
-        if  (p_contain >= p_min)&&(p_contain <= p_max){n_valid += 1;}
+        let min: usize = min_s.parse()?;
+        let max: usize = max_s.parse()?;
+        let ch = letter.trim().chars().next().ok_or("char")?;
+
+        let count = password.chars().filter(|c| *c == ch).count();
+        if (min..=max).contains(&count) {
+            n_valid += 1;
+        }
+
     }
     println!("walid passwords: {}", n_valid);
     Ok(())
