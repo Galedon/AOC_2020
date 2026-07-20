@@ -9,16 +9,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     Ok(())
 }
 
-fn read_file_to_string(path: &str) -> Result<Vec<String>, std::io::Error>{
+
+fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
-    let reader = BufReader::new(file);
-    let mut data = Vec::new();
-    for line_res in reader.lines() {
-        let line = line_res?;
-        data.push(line);
-    }
-    Ok(data)
+    io::BufReader::new(file).lines().collect::<Result<Vec<_>, _>>()
 }
+
 
 // fn read_file_to_int(path: &str) -> Result<Vec<i32>, std::io::Error>{
 //     let file = File::open(path)?;
