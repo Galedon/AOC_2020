@@ -1,11 +1,47 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+// use std::io::{BufRead, BufReader};
+use std::io::{self, BufRead};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    get_day3();
+    let all_fields = vec![
+        "byr",
+        "iyr",
+        "eyr",
+        "hgt",
+        "hcl",
+        "ecl",
+        "pid",
+        // "cid"
+    ];
+    let mut valid_passports = 0;
+    let lines = read_lines_to_str("input/4.txt")?;
+    let mut valid_fields = Vec::new();
+    for line in &lines {
+        if line.len() == 0 {
+            if valid_fields.len() == 0 {continue}
+            let mut valid = true;
+            for k in &all_fields {
+                if !valid_fields.contains(k){
+                    valid = false;
+                    break;
+                }
+            }
+            if valid {
+                valid_passports += 1;
+            }
 
+            valid_fields = Vec::new();
+            continue;
+        }
 
-
+        let logs = line.trim().split_whitespace();
+        for log in logs {
+            let (mut key, _) = log.split_once(":").ok_or("no :")?;
+            key = key.trim();
+            valid_fields.push(key);
+        }
+    }
+    println!("Valid passports: {}", valid_passports);
     Ok(())
 }
 
@@ -51,7 +87,7 @@ fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
 // fn get_day_2() -> Result<(), Box<dyn std::error::Error>> {
 //     let mut n_valid_a = 0;
 //     let mut n_valid_b = 0;
-//     let data = read_file_to_string("input/2.txt")?;
+//     let data = read_file_to_str("input/2.txt")?;
 //     for line in data.iter(){
 //         let (policy, password) = line.split_once(':').ok_or("split")?;
 //         let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
@@ -76,33 +112,33 @@ fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
 //     Ok(())
 // }
 
-fn get_day3() -> Result<(), Box<dyn std::error::Error>> {
-    let data = read_file_to_string("input/3.txt")?;
-    let mut hill: Vec<Vec<char>> = Vec::new();
-    for row in data{
-        hill.push(row.chars().collect());
-    }
-    let slope_vec = vec![
-        (1,1),
-        (3,1),
-        (5,1),
-        (7,1),
-        (1,2),
-    ];
-    let x_base = hill[0].len();
-    let mut res:i64 = 1;
-    for (slope_x, slope_y) in slope_vec {
-        let mut x = 0;
-        let mut y = 0;
-        let mut n_trees = 0;
-        while y < hill.len() {
-            if hill[y][x % x_base] == '#' { n_trees += 1 }
-            y += slope_y;
-            x += slope_x;
-        }
-        if (slope_x, slope_y) == (3,1){println!("res a = {}", n_trees);}
-        res *= n_trees;
-    }
-    println!("res b = {}", res);
-    Ok(())
-}
+// fn get_day3() -> Result<(), Box<dyn std::error::Error>> {
+//     let data = read_file_to_str("input/3.txt")?;
+//     let mut hill: Vec<Vec<char>> = Vec::new();
+//     for row in data{
+//         hill.push(row.chars().collect());
+//     }
+//     let slope_vec = vec![
+//         (1,1),
+//         (3,1),
+//         (5,1),
+//         (7,1),
+//         (1,2),
+//     ];
+//     let x_base = hill[0].len();
+//     let mut res:i64 = 1;
+//     for (slope_x, slope_y) in slope_vec {
+//         let mut x = 0;
+//         let mut y = 0;
+//         let mut n_trees = 0;
+//         while y < hill.len() {
+//             if hill[y][x % x_base] == '#' { n_trees += 1 }
+//             y += slope_y;
+//             x += slope_x;
+//         }
+//         if (slope_x, slope_y) == (3,1){println!("res a = {}", n_trees);}
+//         res *= n_trees;
+//     }
+//     println!("res b = {}", res);
+//     Ok(())
+// }
