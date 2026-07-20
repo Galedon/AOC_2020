@@ -2,25 +2,25 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    // get_day_1();
-    let mut n_valid = 0;
-    let data = read_file_to_string("input/2.txt")?;
-    for line in data.iter(){
-        let (policy, password) = line.split_once(':').ok_or("split")?;
-        let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
-        let (min_s, max_s) = range.split_once('-').ok_or("split")?;
-
-        let min: usize = min_s.parse()?;
-        let max: usize = max_s.parse()?;
-        let ch = letter.trim().chars().next().ok_or("char")?;
-
-        let count = password.chars().filter(|c| *c == ch).count();
-        if (min..=max).contains(&count) {
-            n_valid += 1;
-        }
-
-    }
-    println!("walid passwords: {}", n_valid);
+    get_day_1();
+    // let mut n_valid = 0;
+    // let data = read_file_to_string("input/2.txt")?;
+    // for line in data.iter(){
+    //     let (policy, password) = line.split_once(':').ok_or("split")?;
+    //     let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
+    //     let (min_s, max_s) = range.split_once('-').ok_or("split")?;
+    //
+    //     let min: usize = min_s.parse()?;
+    //     let max: usize = max_s.parse()?;
+    //     let ch = letter.trim().chars().next().ok_or("char")?;
+    //
+    //     let count = password.chars().filter(|c| *c == ch).count();
+    //     if (min..=max).contains(&count) {
+    //         n_valid += 1;
+    //     }
+    //
+    // }
+    // println!("walid passwords: {}", n_valid);
     Ok(())
 }
 
@@ -47,31 +47,24 @@ fn read_file_to_int(path: &str) -> Result<Vec<i32>, std::io::Error>{
     Ok(data)
 }
 
-fn get_day_1() ->  Result<(), Box<dyn std::error::Error>>{
+fn get_day_1() -> Result<(), Box<dyn std::error::Error>> {
     let data = read_file_to_int("input/1.txt")?;
     let mut a = 0;
     let mut b = 0;
-    data.iter().for_each(|&x|
-        {
-            data.iter().for_each(|&z|
-                {
-                    {
-                        if x + z == 2020 {
-                            a = x * z;
-                        }
-                    }
-                    data.iter().for_each(
-                        |&y|
-                            {
-                                if x + y + z == 2020 {
-                                    b = x * y * z;
-                                }
-                            }
-                    )
+
+    for &x in &data {
+        for &z in &data {
+            if x + z == 2020 {
+                a = x * z;
+            }
+            for &y in &data {
+                if x + y + z == 2020 {
+                    b = x * y * z;
                 }
-            )
+            }
         }
-    );
+    }
+
     println!("a = {}, b = {}", a, b);
     Ok(())
 }
