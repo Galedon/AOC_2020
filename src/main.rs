@@ -7,16 +7,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     let data = read_file("input/1.txt")?;
     data.iter().for_each(|&x|
         {
-            data.iter().for_each(
-                |&y|
-                    {
-                        // println!( "{}", y+x);
-                        if x + y == 2020 {
-                            println!("{} + {} = {}", x, y, x + y);
-                            println!("{} * {} = {}", x, y, x * y);
-                            return;
-                        }
-                    }
+            data.iter().for_each(|&z|
+                {
+                    data.iter().for_each(
+                        |&y|
+                            {
+                                if x + y + z == 2020 {
+                                    println!("{} + {} + {} = {}", x, y, z, x + y + z);
+                                    println!("{} * {} * {} = {}", x, y, z, x * y * z);
+                                }
+                            }
+                    )
+                }
             )
         }
 
