@@ -3,27 +3,8 @@ use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
 
+    get_day_1();
 
-    let data = read_file("input/1.txt")?;
-    data.iter().for_each(|&x|
-        {
-            data.iter().for_each(|&z|
-                {
-                    data.iter().for_each(
-                        |&y|
-                            {
-                                if x + y + z == 2020 {
-                                    println!("{} + {} + {} = {}", x, y, z, x + y + z);
-                                    println!("{} * {} * {} = {}", x, y, z, x * y * z);
-                                }
-                            }
-                    )
-                }
-            )
-        }
-
-
-    );
 
     Ok(())
 }
@@ -41,3 +22,31 @@ fn read_file(path: &str) -> Result<Vec<i32>, std::io::Error>{
     Ok(data)
 }
 
+fn get_day_1() ->  Result<(), Box<dyn std::error::Error>>{
+    let data = read_file("input/1.txt")?;
+    let mut a = 0;
+    let mut b = 0;
+    data.iter().for_each(|&x|
+        {
+            data.iter().for_each(|&z|
+                {
+                    {
+                        if x + z == 2020 {
+                            a = x * z;
+                        }
+                    }
+                    data.iter().for_each(
+                        |&y|
+                            {
+                                if x + y + z == 2020 {
+                                    b = x * y * z;
+                                }
+                            }
+                    )
+                }
+            )
+        }
+    );
+    println!("a = {}, b = {}", a, b);
+    Ok(())
+}
