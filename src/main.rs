@@ -2,25 +2,25 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    get_day_1();
-    // let mut n_valid = 0;
-    // let data = read_file_to_string("input/2.txt")?;
-    // for line in data.iter(){
-    //     let (policy, password) = line.split_once(':').ok_or("split")?;
-    //     let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
-    //     let (min_s, max_s) = range.split_once('-').ok_or("split")?;
-    //
-    //     let min: usize = min_s.parse()?;
-    //     let max: usize = max_s.parse()?;
-    //     let ch = letter.trim().chars().next().ok_or("char")?;
-    //
-    //     let count = password.chars().filter(|c| *c == ch).count();
-    //     if (min..=max).contains(&count) {
-    //         n_valid += 1;
-    //     }
-    //
-    // }
-    // println!("walid passwords: {}", n_valid);
+    // get_day_1();
+    let mut n_valid = 0;
+    let data = read_file_to_string("input/2.txt")?;
+    for line in data.iter(){
+        let (policy, password) = line.split_once(':').ok_or("split")?;
+        let (range, letter) = policy.trim().split_once(' ').ok_or("split")?;
+        let (min_s, max_s) = range.split_once('-').ok_or("split")?;
+
+        let p1: usize = min_s.parse()?;
+        let p2: usize = max_s.parse()?;
+        let ch = letter.trim().chars().next().ok_or("char")?;
+
+        if (password.chars().nth(p1) == Some(ch))^(password.chars().nth(p2) == Some(ch))
+        {
+            n_valid += 1;
+        }
+
+    }
+    println!("walid passwords: {}", n_valid);
     Ok(())
 }
 
