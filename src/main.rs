@@ -2,8 +2,28 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    // get_day_1();
-    get_day_2();
+
+    let data = read_file_to_string("input/3.txt")?;
+    let mut hill: Vec<Vec<char>> = Vec::new();
+    for row in data{
+        hill.push(row.chars().collect());
+    }
+
+    let mut x = 0;
+    let mut y = 0;
+    let slope_x = 3;
+    let slope_y = 1;
+
+    let x_base = hill[0].len();
+    let mut n_trees = 0;
+    while true{
+        if y >= hill.len(){break}
+        if hill[y][x%x_base] == '#'{n_trees += 1}
+        y += slope_y;
+        x += slope_x;
+    }
+    println!("{}", n_trees);
+
 
     Ok(())
 }
