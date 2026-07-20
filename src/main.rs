@@ -2,44 +2,12 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
+    get_day3();
 
-    let data = read_file_to_string("input/3.txt")?;
-    let mut hill: Vec<Vec<char>> = Vec::new();
-    for row in data{
-        hill.push(row.chars().collect());
-    }
-
-    let slope_vec = vec![
-        (1,1),
-        (3,1),
-        (5,1),
-        (7,1),
-        (1,2),
-        ];
-    let mut res:i64 = 1;
-    for slope in slope_vec {
-        let mut x = 0;
-        let mut y = 0;
-        let slope_x = slope.0;
-        let slope_y = slope.1;
-        // println!("{:?}", slope);
-
-        let x_base = hill[0].len();
-        let mut n_trees = 0;
-        loop {
-            if y >= hill.len() { break }
-            if hill[y][x % x_base] == '#' { n_trees += 1 }
-            y += slope_y;
-            x += slope_x;
-        }
-        res *= n_trees;
-    }
-    println!("{}", res);
 
 
     Ok(())
 }
-
 
 fn read_file_to_string(path: &str) -> Result<Vec<String>, std::io::Error>{
     let file = File::open(path)?;
@@ -111,3 +79,34 @@ fn read_file_to_string(path: &str) -> Result<Vec<String>, std::io::Error>{
 //     println!("walid passwords b: {}", n_valid_b);
 //     Ok(())
 // }
+
+fn get_day3() -> Result<(), Box<dyn std::error::Error>> {
+    let data = read_file_to_string("input/3.txt")?;
+    let mut hill: Vec<Vec<char>> = Vec::new();
+    for row in data{
+        hill.push(row.chars().collect());
+    }
+    let slope_vec = vec![
+        (1,1),
+        (3,1),
+        (5,1),
+        (7,1),
+        (1,2),
+    ];
+    let x_base = hill[0].len();
+    let mut res:i64 = 1;
+    for (slope_x, slope_y) in slope_vec {
+        let mut x = 0;
+        let mut y = 0;
+        let mut n_trees = 0;
+        while y < hill.len() {
+            if hill[y][x % x_base] == '#' { n_trees += 1 }
+            y += slope_y;
+            x += slope_x;
+        }
+        if (slope_x, slope_y) == (3,1){println!("res a = {}", n_trees);}
+        res *= n_trees;
+    }
+    println!("res b = {}", res);
+    Ok(())
+}
