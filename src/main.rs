@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 // use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -6,6 +7,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
 
     let data = read_lines_to_str("input/5.txt")?;
     let mut id_max = 0;
+    let mut ids: HashSet<i32> = HashSet::new();
     for line in data{
         let row_s = &line[..7].replace("B", "1").replace("F", "0");
         let col_s =&line[7..].replace("L", "0").replace("R", "1");
@@ -14,12 +16,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
         let col = i32::from_str_radix(&col_s, 2).unwrap();
 
         let id = row * 8 + col;
+        ids.insert(id);
         if id > id_max{
             id_max = id;
         }
     }
-    println!("{}", id_max);
-
+    println!("max id = {}", id_max);
+    
+    let mut res_b = 0;
+    for i in  0..id_max {
+        if !ids.contains(&i){
+            if !ids.contains(&(i+1)){ continue; }
+            if !ids.contains(&(i-1)){ continue; }
+            res_b = i; 
+            break
+        }
+    }
+    println!("seat = {}", res_b);
     Ok(())
 }
 
