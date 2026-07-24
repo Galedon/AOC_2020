@@ -348,3 +348,47 @@ pub fn get_day_7()-> Result<String, Box<dyn std::error::Error>>{
     
     Ok(format!("res_a = {}, res_b = {}", res_a, res_b ))
 }
+
+///////////
+fn one_Run_8(data: &Vec<String>) -> Result<(bool,i32), Box<dyn std::error::Error>>{
+    let mut visited = HashSet::new();
+    let mut accumulator = 0;
+    let mut i: i32 = 0;
+    loop{
+        if visited.contains( & i) {return Ok((false, accumulator))}
+        if i == (data.len()-1) as i32{
+            return Ok((true, accumulator))
+        }
+        visited.insert(i);
+        let line = & data[i as usize];
+        let parts = line.split_whitespace().collect::<Vec < & str > > ();
+        // println!("{:?}", parts);
+        match parts[0] {
+            "acc" => { accumulator += parts[1].parse::<i32 > () ?; i += 1; },
+            "jmp" => i += parts[1].parse::< i32 > () ?,
+            "nop" => i += 1,
+            _ => panic ! ("invalid input: {}", parts[0])
+        }
+    }
+}
+
+pub fn get_day_8() -> Result<String, Box<dyn std::error::Error>>{
+    let mut data = read_lines_to_str("input/8.txt")?;
+    let mut res_b = 0;
+    let (_, res) = one_Run_8(& data)?;
+    let res_a = res;
+    for i in 0 .. data.len(){
+        let line_orig = data[i].clone();
+        let parts = data[i].split_whitespace().collect::<Vec< & str >>();
+        match parts[0]{
+            "jmp" => data[i] = format!("nop {}", parts[1]),
+            "nop" => data[i] = format!("jmp {}", parts[1]),
+            "acc" => continue,
+            _ => panic!("invalid line input: {:?}", data[i])
+        }
+        let (succ, res) = one_Run_8(&mut data)?;
+        if succ{res_b = res; break}
+        data[i] = line_orig;
+    }
+    Ok(format!("res a = {}, res b = {}", res_a, res_b ))
+}
