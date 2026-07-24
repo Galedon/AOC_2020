@@ -1,10 +1,10 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use crate::solutions::io::BufReader;
 use std::collections::HashSet;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
-use crate::solutions;
+use crate::{solutions, InnerBag};
 
 pub fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
@@ -261,4 +261,80 @@ pub fn get_day_6()-> Result<String, Box<dyn std::error::Error>>{
         yes_set_b = yes_set_b.intersection(&yes_line).cloned().collect();
     }
     Ok(format!("res_a = {}, res_b = {}", yes_sum, yes_sum_b ))
+}
+
+pub fn get_day_7()-> Result<String, Box<dyn std::error::Error>>{
+    let data = read_lines_to_str("input/7.txt")?;
+
+    let mut  bags_conditions:HashMap<String, HashMap<String, i32>> = HashMap::new();
+    let mut is_in_map = HashMap::new();
+    for line in data{
+        let parts = line.split("contain").collect::<Vec<&str>>();
+
+        let outer = parts[0]
+            .trim()
+            .trim_end_matches("bag")
+            .trim_end_matches("bags")
+            .trim()
+            .to_string();
+        bags_conditions.insert(outer.clone(), HashMap::new());
+        for mut inner in parts[1].split(","){
+            if inner.contains("no other"){continue};
+            let inner_val = inner.split_whitespace()
+                .next().ok_or("inner is empty")?
+                .parse::<i32>()?;
+            // println!("inner: {}, inner val: {}", inner, inner_val);
+            let inner_string = inner.split_whitespace()
+                .skip(1)
+                .collect::<Vec<&str>>()
+                .join(" ");
+            inner = &inner_string;
+            inner = inner
+                .trim()
+                .trim_end_matches(".")
+                .trim_end_matches("bag")
+                .trim_end_matches("bags")
+                .trim();
+
+            bags_conditions
+                .get_mut(&outer).ok_or("problem with key reading")?
+                .insert(inner.to_string(), inner_val);
+
+            if !is_in_map.contains_key(inner) {is_in_map.insert(inner.to_string(), HashSet::new());}
+
+            is_in_map.get_mut(inner).ok_or("is_in generation problem")?
+                .insert(outer.clone());
+        }
+    }
+
+    let mut possibles = HashSet::new();
+    possibles.insert("shiny gold".to_string());
+    let mut l_old = possibles.len();
+    loop {
+        for key in possibles.clone(){
+
+            if let Some(is_in_list) = is_in_map.get(&key) {
+                for is_in in is_in_list {
+                    possibles.insert(is_in.to_string());
+                }
+            }
+        }
+        if possibles.len() == l_old {break}
+        l_old = possibles.len();
+    }
+    let res_a =  possibles.len()-1;
+    
+
+    let mut to_calc:VecDeque<InnerBag> = VecDeque::new();
+    to_calc.push_back(InnerBag::from("shiny gold".to_string(), 1));
+    let mut bags  = 0;
+    while let Some(inner_back) = to_calc.pop_front(){
+        for (key, val) in &bags_conditions[&inner_back.color]{
+            to_calc.push_back(InnerBag::from (key.to_string(), *val*inner_back.count));
+            bags += *val*inner_back.count;
+        }
+    }
+    let res_b = bags;
+    
+    Ok(format!("res_a = {}, res_b = {}", res_a, res_b ))
 }
