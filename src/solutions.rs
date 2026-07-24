@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
-use crate::{solutions, InnerBag};
+
 
 pub fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
@@ -232,7 +232,7 @@ pub fn get_day_5()-> Result<String, Box<dyn std::error::Error>>{
 }
 
 pub fn get_day_6()-> Result<String, Box<dyn std::error::Error>>{
-    let data = solutions::read_lines_to_str("input/6.txt")?;
+    let data = read_lines_to_str("input/6.txt")?;
     let mut yes_sum = 0;
     let mut yes_sum_b = 0;
     let mut yes_set = HashSet::new();
@@ -262,7 +262,17 @@ pub fn get_day_6()-> Result<String, Box<dyn std::error::Error>>{
     }
     Ok(format!("res_a = {}, res_b = {}", yes_sum, yes_sum_b ))
 }
-
+///////
+#[derive(Debug)]
+struct InnerBag {
+    color: String,
+    count: i32,
+}
+impl InnerBag {
+    fn from (color: String, count: i32) -> InnerBag {
+        InnerBag {color, count}
+    }
+}
 pub fn get_day_7()-> Result<String, Box<dyn std::error::Error>>{
     let data = read_lines_to_str("input/7.txt")?;
 
