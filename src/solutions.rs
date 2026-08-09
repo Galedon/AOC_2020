@@ -8,16 +8,30 @@ use std::io::BufRead;
 
 pub fn read_lines_to_str(path: &str) -> io::Result<Vec<String>> {
     let file = File::open(path)?;
-    io::BufReader::new(file).lines().collect::<Result<Vec<_>, _>>()
+    BufReader::new(file).lines().collect::<Result<Vec<_>, _>>()
 }
 
 
 pub fn read_file_to_int(path: &str) -> Result<Vec<i32>, std::io::Error>{
     let file = File::open(path)?;
+
     let reader = BufReader::new(file);
     let mut data: Vec<i32> = Vec::new();
     for line_res in reader.lines() {
         let line = line_res?;
+        // println!("{}", line);
+        data.push(line.parse().unwrap());
+    }
+    Ok(data)
+}
+pub fn read_file_to_int_64(path: &str) -> Result<Vec<i64>, std::io::Error>{
+    let file = File::open(path)?;
+
+    let reader = BufReader::new(file);
+    let mut data: Vec<i64> = Vec::new();
+    for line_res in reader.lines() {
+        let line = line_res?;
+        // println!("{}", line);
         data.push(line.parse().unwrap());
     }
     Ok(data)
@@ -350,7 +364,7 @@ pub fn get_day_7()-> Result<String, Box<dyn std::error::Error>>{
 }
 
 ///////////
-fn one_Run_8(data: &Vec<String>) -> Result<(bool,i32), Box<dyn std::error::Error>>{
+fn one_run_8(data: &Vec<String>) -> Result<(bool, i32), Box<dyn std::error::Error>>{
     let mut visited = HashSet::new();
     let mut accumulator = 0;
     let mut i: i32 = 0;
@@ -375,7 +389,7 @@ fn one_Run_8(data: &Vec<String>) -> Result<(bool,i32), Box<dyn std::error::Error
 pub fn get_day_8() -> Result<String, Box<dyn std::error::Error>>{
     let mut data = read_lines_to_str("input/8.txt")?;
     let mut res_b = 0;
-    let (_, res) = one_Run_8(& data)?;
+    let (_, res) = one_run_8(& data)?;
     let res_a = res;
     for i in 0 .. data.len(){
         let line_orig = data[i].clone();
@@ -386,7 +400,7 @@ pub fn get_day_8() -> Result<String, Box<dyn std::error::Error>>{
             "acc" => continue,
             _ => panic!("invalid line input: {:?}", data[i])
         }
-        let (succ, res) = one_Run_8(&mut data)?;
+        let (succ, res) = one_run_8(&mut data)?;
         if succ{res_b = res; break}
         data[i] = line_orig;
     }

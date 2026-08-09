@@ -1,12 +1,29 @@
 use std::collections::{HashSet};
-use crate::solutions::read_lines_to_str;
+use crate::solutions::{read_lines_to_str, read_file_to_int, read_file_to_int_64};
 
 mod solutions;
 
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    // let mut data = read_lines_to_str("input/8.txt")?;
+    let data = read_file_to_int_64("input/9.txt")?;
+
+    let mut i = 26;
+    loop{
+        let mut ok = false;
+        for j in i-25 .. i {
+            for k in j+1 .. i {
+                if data[j]+data[k] == data[i] {
+                    ok = true;
+                }
+            }
+        }
+        // println!("i = {i}");
+        if !ok {
+            println!("{}", data[i]);
+            break}
+        i += 1
+    }
 
 
 
@@ -39,9 +56,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     // println!("{}", solutions::get_day_7()?);
     // println!();
 
-    println!("day 8:");
-    println!("{}", solutions::get_day_8()?);
-    println!();
+    // println!("day 8:");
+    // println!("{}", solutions::get_day_8()?);
+    // println!();
 
     Ok(())
 }
