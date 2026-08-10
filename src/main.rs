@@ -6,7 +6,20 @@ mod solutions;
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    let data = read_file_to_int_64("input/9.txt")?;
+    let mut data = read_file_to_int("input/10.txt")?;
+    data.push(0);
+    data.sort();
+
+    let mut one_jolt = 0;
+    let mut three_jolt = 0;
+    for i in 0..data.len()-1{
+        if data[i+1] - data[i] == 1{ one_jolt += 1; }
+        if data[i+1] - data[i] == 3{ three_jolt += 1; }
+        if data[i+1] - data[i] > 3{ panic!("too much jolt diff: {}, i = {}", data[i+1] - data[i],i) }
+    }
+    three_jolt += 1;
+    println!("{}", one_jolt * three_jolt);
+
 
 
     // println!("day 1:");
@@ -41,9 +54,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     // println!("{}", solutions::get_day_8()?);
     // println!();
 
-    println!("day 9:");
-    println!("{}", solutions::get_day_9()?);
-    println!();
+    // println!("day 9:");
+    // println!("{}", solutions::get_day_9()?);
+    // println!();
 
     Ok(())
 }
