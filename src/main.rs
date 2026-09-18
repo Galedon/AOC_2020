@@ -1,37 +1,12 @@
-use std::collections::{HashSet};
-use std::cmp::min;
-use crate::solutions::{read_lines_to_str, read_file_to_int, read_file_to_int_64};
+// use std::collections::{HashSet};
+// use std::cmp::min;
+// use crate::solutions::{read_lines_to_str, read_file_to_int, read_file_to_int_64};
 
 mod solutions;
 
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>>{
-    let mut data = read_file_to_int("input/10.txt")?;
-    data.push(0);
-    data.sort();
-
-    let mut one_jolt = 0;
-    let mut three_jolt = 0;
-    for i in 0..data.len()-1{
-        if data[i+1] - data[i] == 1{ one_jolt += 1; }
-        if data[i+1] - data[i] == 3{ three_jolt += 1; }
-    }
-    three_jolt += 1;
-    println!("{}", one_jolt * three_jolt);
-
-    let mut combs:Vec<i64> = vec![0; data.len()];
-    combs[0] = 1;
-    for i in 0..data.len(){
-        for j in i+1..data.len(){
-            if data[j] - data[i] <= 3 {
-                combs[j] += combs[i];
-            }
-            else {break}
-
-        }
-    }
-    println!("combinations: {:?}", {combs.last()});
 
 
 
@@ -70,6 +45,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     // println!("day 9:");
     // println!("{}", solutions::get_day_9()?);
     // println!();
+
+    println!("day 10:");
+    println!("{}", solutions::get_day_10()?);
+    println!();
 
     Ok(())
 }

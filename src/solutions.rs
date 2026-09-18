@@ -461,3 +461,32 @@ pub fn get_day_9() -> Result<String, Box<dyn std::error::Error>>{
     // println!("{}", min + max);
     Ok(format!("res_a = {}, res_b = {}", the_number, min + max))
 }
+
+pub fn get_day_10()-> Result<String, Box<dyn std::error::Error>>{
+    let mut data = read_file_to_int("input/10.txt")?;
+    data.push(0);
+    data.sort();
+
+    let mut one_jolt = 0;
+    let mut three_jolt = 0;
+    for i in 0..data.len()-1{
+        if data[i+1] - data[i] == 1{ one_jolt += 1; }
+        if data[i+1] - data[i] == 3{ three_jolt += 1; }
+    }
+    three_jolt += 1;
+    let res_a = one_jolt * three_jolt; 
+
+    let mut combs:Vec<i64> = vec![0; data.len()];
+    combs[0] = 1;
+    for i in 0..data.len(){
+        for j in i+1..data.len(){
+            if data[j] - data[i] <= 3 {
+                combs[j] += combs[i];
+            }
+            else {break}
+        }
+    }
+    let res_b= combs.last().unwrap();
+    
+    Ok(format!("res_a = {}, res_b = {}", res_a, res_b))
+}
