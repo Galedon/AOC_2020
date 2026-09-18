@@ -1,4 +1,5 @@
 use std::collections::{HashSet};
+use std::cmp::min;
 use crate::solutions::{read_lines_to_str, read_file_to_int, read_file_to_int_64};
 
 mod solutions;
@@ -15,10 +16,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>>{
     for i in 0..data.len()-1{
         if data[i+1] - data[i] == 1{ one_jolt += 1; }
         if data[i+1] - data[i] == 3{ three_jolt += 1; }
-        if data[i+1] - data[i] > 3{ panic!("too much jolt diff: {}, i = {}", data[i+1] - data[i],i) }
     }
     three_jolt += 1;
     println!("{}", one_jolt * three_jolt);
+
+    let mut combs:Vec<i64> = vec![0; data.len()];
+    combs[0] = 1;
+    for i in 0..data.len(){
+        for j in i+1..data.len(){
+            if data[j] - data[i] <= 3 {
+                combs[j] += combs[i];
+            }
+            else {break}
+
+        }
+    }
+    println!("combinations: {:?}", {combs.last()});
 
 
 
