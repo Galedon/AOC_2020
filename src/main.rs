@@ -33,14 +33,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         n_occ
     }
 
+    fn get_occupied_visible(x: i32, y: i32, array_old: &Vec<Vec<char>>) -> i32 {
+        let mut n_occ = 0;
+        for dir in [[1,0], [1,1], [0,1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]{
+            let i = dir[0];
+            let j = dir[1];
+            let mut k = 1;
+            loop{
+                if (x + k*i >= array_old.len() as i32)
+                    || (x + k*i < 0)
+                    || (y + k*j >= array_old[0].len() as i32)
+                    || (y + k*j < 0)
+                {break}
+                if array_old[(x + k*i) as usize][(y + k*j) as usize] == '#'{
+                    n_occ += 1;
+                    break;
+                }
+                if array_old[(x + k*i) as usize][(y + k*j) as usize] == 'L'{break}
+                k += 1;
+            }
+        }
+        n_occ
+    }
+
     fn one_seat(x: usize, y: usize, array: &mut Vec<Vec<char>>, array_old: &Vec<Vec<char>>) -> i32 {
         let mut n_changed = 0;
-        if (array_old[x][y] == 'L') && (get_occupied_neighbours(x as i32, y as i32, array_old) == 0)
+        if (array_old[x][y] == 'L') && (get_occupied_visible(x as i32, y as i32, array_old) == 0)
         {
             array[x][y] = '#';
             n_changed += 1;
         } else if (array_old[x][y] == '#')
-            && (get_occupied_neighbours(x as i32, y as i32, array_old) >= 4)
+            && (get_occupied_visible(x as i32, y as i32, array_old) >= 5)
         {
             array[x][y] = 'L';
             n_changed += 1
@@ -61,7 +84,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         n_changed
     }
 
+    let mut iteration = 0;
     loop {
+        iteration += 1;
+        println!("{iteration}");
         let n_changes = one_iteration(&mut array, &mut array_old);
         if n_changes == 0 {
             break;
